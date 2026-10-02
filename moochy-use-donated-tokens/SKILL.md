@@ -5,7 +5,7 @@ description: Use LLM tokens donated to an open-source project through Moochy fro
 
 # Use donated tokens with Moochy
 
-A maintainer's machine runs the Moochy app. It gives agents two ways in, both on `127.0.0.1` only: an **MCP server** (tools `moochy_delegate` and `moochy_pool_status`) and a **provider-compatible API** (Anthropic Messages and OpenAI Chat Completions) that makes donated tokens the agent's model. Guides: https://moochy.dev/docs/maintainer.md and https://moochy.dev/docs/integrations.md
+A maintainer's machine runs the Moochy app. It gives agents two ways in, both on `127.0.0.1` only: an **MCP server** (tools `moochy_delegate` and `moochy_pool_status`) and a **provider-compatible API** (Anthropic Messages, OpenAI Chat Completions, and OpenAI Responses for Codex) that makes donated tokens the agent's model. Guides: https://moochy.dev/docs/maintainer.md and https://moochy.dev/docs/integrations.md
 
 ## Rules
 
@@ -56,6 +56,8 @@ moochy env --repo owner/name --json     # {"anthropic_base_url", "openai_base_ur
 ```
 
 Put the token in an environment variable such as `MOOCHY_TOKEN` and reference it from the config; never paste its value into a file.
+
+**Codex** uses donated tokens as its model through the OpenAI Responses API (`POST /v1/responses`, the only format Codex accepts for custom providers). `moochy connect codex` prints the `[model_providers.moochy]` block for `~/.codex/config.toml` with `wire_api = "responses"` and `env_key = "MOOCHY_TOKEN"`. Only donors on OpenAI, xAI, or OpenRouter serve it, and every request must be self-contained: do not set `store: true` or `previous_response_id`.
 
 ### 4. Delegate with `moochy_delegate`
 
