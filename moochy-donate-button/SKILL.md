@@ -102,7 +102,7 @@ Match `height` in HTML to the size. Keep `alt="Donate tokens"` (or the label).
 
 ### 5. Check
 
-`curl -s -o /dev/null -w '%{http_code}\n' "BUTTON_URL"` prints `200` when the button renders, `400` for a wrong option, `404` when the project is not registered.
+`curl -s -o /dev/null -w '%{http_code}\n' "BUTTON_URL"` prints `200` when the image renders and `400` for a wrong option. A project that is not registered also gets `200`, with a "project not found" badge, so check registration with the projects API (step 1).
 
 ## Organisations (profile READMEs)
 
