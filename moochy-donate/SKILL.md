@@ -1,6 +1,6 @@
 ---
 name: moochy-donate
-description: Help a user donate LLM tokens to an open-source project with Moochy - install the app, add their provider key locally, set limits, donate, pause or stop, and see what their key was used for. Use when the user wants to donate tokens, support a project with their Anthropic, OpenAI, OpenRouter, DeepSeek, xAI key or local GPU, or manage their Moochy donations.
+description: Help a user donate LLM tokens to an open-source project, or to a whole GitHub organisation or GitLab group, with Moochy - install the app, add their provider key locally, set limits, donate, pause or stop, and see what their key was used for. Use when the user wants to donate tokens, support a project with their Anthropic, OpenAI, OpenRouter, DeepSeek, xAI key or local GPU, or manage their Moochy donations.
 ---
 
 # Donate tokens with Moochy
@@ -10,7 +10,7 @@ The donor's machine runs the Moochy app. It receives encrypted requests from a p
 ## Rules
 
 - **The key stays with the user.** Never ask for the provider API key, never read it, print it, or put it in a file, a command line, or your reply. The user types it into `moochy keys add` themselves (it reads from standard input).
-- **Donating is the user's decision.** Run `moochy donate` only when the user asked for that project and that monthly amount, and show them the command first. Never raise a limit on your own.
+- **Donating is the user's decision.** Run `moochy donate` only when the user asked for that project (or organisation) and that monthly amount, and show them the command first. Never raise a limit on your own.
 - **Do not weaken safety.** Do not use `moochy up --unsafe-no-lockdown`, and do not skip the safety step for the user (`--accept-safety` is their confirmation, not yours).
 - **Do not install by piping a script into a shell.** Use a package manager or a release file the user can check.
 
@@ -69,10 +69,20 @@ moochy donate --repo owner/name --cap '$20'      # up to $20 a month; asks for c
 
 Quote the amount so the shell keeps the `$`. The donation starts when the project's maintainer accepts it. Models, maximum effort, schedule, and visibility are set on the project's page on moochy.dev.
 
+To an organisation (a GitHub organisation or a GitLab group, with every project its owner chose):
+
+```sh
+moochy donate --org github/acme --cap '$20'              # or --org gitlab/group/subgroup
+```
+
+- Always write the code host in `--org` (`github/…`, `gitlab/…`). `--repo acme/api` is the single project, never the organisation; do not guess one from the other: ask the user.
+- Check first that the organisation is on Moochy and which projects it funds: `curl -fsS https://moochy.dev/api/v1/orgs/github/acme` (a `404` means it is not). Its page is `https://moochy.dev/org/github/acme`.
+- The monthly limit is shared by all the organisation's projects together, not per project. The owner accepts the user once for the whole organisation. What each project used is on the donation's page on moochy.dev (Dashboard → the donation). Guide: https://moochy.dev/docs/donate-to-an-organisation.md
+
 ### 7. Pause, stop, and check
 
 ```sh
-moochy donations                       # each donation, what it used this month, and its id
+moochy donations                       # each donation (organisations show as org github/acme), what it used this month, and its id
 moochy donations pause <id>            # or resume <id>
 moochy donations stop <id>             # ends the donation
 moochy pause                           # stop serving from this machine at once (moochy resume to undo)

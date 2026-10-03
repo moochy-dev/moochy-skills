@@ -1,6 +1,6 @@
 ---
 name: moochy-donate-button
-description: Add, fix, or check the Moochy "Donate tokens" button in a repository README so people can donate LLM tokens to the project. Use when the user asks for a Moochy button or badge, to accept token donations through moochy.dev, or to repair an existing Moochy button.
+description: Add, fix, or check the Moochy "Donate tokens" button in a repository README, or in a GitHub organisation's or GitLab group's profile README, so people can donate LLM tokens to the project or the organisation. Use when the user asks for a Moochy button or badge, to accept token donations through moochy.dev, or to repair an existing Moochy button.
 ---
 
 # Add the Moochy "Donate tokens" button
@@ -11,7 +11,7 @@ The button is a plain image link in the README. It needs no account, no key, and
 
 - Never put an API key, a token, or a password in the README, a URL, or a commit, and never ask the user for one: the button does not need any.
 - Do not add tracking or `utm_*` parameters, redirects, scripts, or iframes. Unknown parameters break the image.
-- Do not register (claim) the project or run any `moochy` command that signs something. Those need the maintainer's own owner key; tell them the command instead.
+- Do not register (claim) the project or the organisation, or run any `moochy` command that signs something. Those need the maintainer's own owner key; tell them the command instead.
 - Change only the README.
 
 ## Steps
@@ -95,7 +95,7 @@ Match `height` in HTML to the size. Keep `alt="Donate tokens"` (or the label).
 ### 4. Put it in the README
 
 1. Use `README.md`, `README.rst`, or `README` at the repository root, in that order. If none exists, ask before creating one.
-2. Search for `moochy.dev/p/`. If a Moochy button is already there, do not add another; replace it only if the user asked for a change.
+2. Search for `moochy.dev/p/` and `moochy.dev/org/`. If a Moochy button is already there, do not add another; replace it only if the user asked for a change.
 3. If the README has a row of badges near the top, add the button at the end of that row in the same syntax. Otherwise add it on its own line right after the title, with a blank line before and after.
 4. Do not reorder, reformat, or remove anything else.
 5. Commit only the README: `docs: add a "Donate tokens" button (Moochy)`.
@@ -104,8 +104,42 @@ Match `height` in HTML to the size. Keep `alt="Donate tokens"` (or the label).
 
 `curl -s -o /dev/null -w '%{http_code}\n' "BUTTON_URL"` prints `200` when the button renders, `400` for a wrong option, `404` when the project is not registered.
 
+## Organisations (profile READMEs)
+
+A GitHub organisation or GitLab group claimed on Moochy has its own button; a donation to it serves every project its owner chose. Use it in the organisation's profile README, or in a project README only when the user asks for the organisation's button. Personal accounts are not organisations: a personal profile README gets the button of one of the person's projects (steps 1 to 5).
+
+| Where | Profile README file |
+|---|---|
+| GitHub organisation `ORG` | `profile/README.md` in the `ORG/.github` repository |
+| GitLab group `GROUP` | `README.md` in the `GROUP/gitlab-profile` project |
+
+In the `.github` or `gitlab-profile` checkout, the organisation is the remote path without its last segment (`acme/.github` → `github/acme`; `group/sub/gitlab-profile` → `gitlab/group/sub`). Check it and get the addresses:
+
+```sh
+curl -fsS "https://moochy.dev/api/v1/orgs/github/acme"            # or .../orgs/gitlab/group/sub
+```
+
+The answer is `{"org_id": …, "path": …, "claimed": true, "repos": […], "donate_url": …, "button_url": …}`, public, with no donor or amount. Use `button_url` and `donate_url` exactly as returned. A `404` means the organisation is not on Moochy: do not add the button; give the user the organisation message below.
+
+| Organisation | Image | Link |
+|---|---|---|
+| GitHub | `https://moochy.dev/org/github/ORG/button.svg` | `https://moochy.dev/org/github/ORG/donate` |
+| GitLab, group or subgroup | `https://moochy.dev/org/gitlab/GROUP/SUB/-/button.svg` | `https://moochy.dev/org/gitlab/GROUP/SUB/-/donate` |
+
+Snippets, options, placement and the check are those of steps 3 to 5. Example:
+
+```markdown
+[![Donate tokens](https://moochy.dev/org/github/acme/button.svg)](https://moochy.dev/org/github/acme/donate)
+```
+
+`moochy button` prints project buttons only. Commit message: `docs: add a "Donate tokens" button for the organisation (Moochy)`.
+
 ## Not on Moochy yet
 
 Give the user this message, with `PATH` from step 1:
 
 > To accept token donations, sign in at https://moochy.dev/claim with the GitHub or GitLab account that administers `PATH`, register the repository, then confirm on your own machine: `moochy owner init` (once) and `moochy claim PATH`. Then the "Donate tokens" button can go in the README. Guide: https://moochy.dev/docs/maintainer
+
+For an organisation, with `ORG` as `github/acme` or `gitlab/group/sub`:
+
+> To accept token donations for the whole organisation, sign in at https://moochy.dev/claim with an account that owns `ORG` (GitHub: an organisation admin; GitLab: a group Owner) and choose Organisation, then confirm on your own machine: `moochy claim --org ORG`, and add the projects it funds with `moochy org add PROJECT --org ORG`. Guide: https://moochy.dev/docs/organisations
