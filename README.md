@@ -11,9 +11,9 @@ Three skills teach a coding agent how to work with Moochy. Each is a folder with
 ## Install
 
 ```sh
-npx skills add moochy-dev/moochy-cli                       # pick skills and agents interactively
-npx skills add moochy-dev/moochy-cli --skill moochy-donate-button -a claude-code
-npx skills add moochy-dev/moochy-cli --skill '*' -g -a codex -a gemini-cli   # every skill, user-wide
+npx skills add moochy-dev/moochy-skills                       # pick skills and agents interactively
+npx skills add moochy-dev/moochy-skills --skill moochy-donate-button -a claude-code
+npx skills add moochy-dev/moochy-skills --skill '*' -g -a codex -a gemini-cli   # every skill, user-wide
 ```
 
 Without `-g`, skills go into the project (commit them so the whole team gets them); with `-g`, into your home folder for every project.
@@ -48,4 +48,9 @@ Folders are those of the skills CLI (checked 2026-10-02); `npx skills add` picks
 - `name` and `description` in the frontmatter are required; the description says when to use the skill.
 - Keep each `SKILL.md` under 500 lines and name only `moochy` commands that exist (`moochy <command> --help` must succeed).
 - Never include a token, a key, or an instruction to pipe a downloaded script into a shell or to disable approvals.
-- The same files are published on the docs site at https://moochy.dev/docs/skills (copied at build time with `go generate`).
+- The same files are published on the docs site at https://moochy.dev/docs/skills (the site copies this repository at build time).
+- Check the format before you push: `python3 scripts/check-skills.py`.
+
+## License
+
+Apache-2.0 ([LICENSE](https://github.com/moochy-dev/moochy-skills/blob/main/LICENSE)). Open-source client (Apache-2.0) · 100% free.
