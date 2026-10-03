@@ -10,7 +10,7 @@ A maintainer's machine runs the Moochy app. It gives agents two ways in, both on
 ## Rules
 
 - **Tokens stay in the environment.** The project token is printed by `moochy env` and lives in environment variables or the agent's own secret store. Never write it into a file tracked by git, a commit, a log, or your reply. Never ask the user for provider API keys: Moochy does not need them on this side.
-- **Never sign for the user.** `moochy owner init`, `moochy claim`, `moochy accept` (`approve`), and `moochy members` sign decisions with the maintainer's owner key. Tell the user the exact command and let them run it.
+- **Never sign for the user.** `moochy owner init`, `moochy claim`, `moochy accept` (`approve`), `moochy members`, `moochy org`, and `moochy person` sign decisions with the maintainer's owner key. Tell the user the exact command and let them run it.
 - **Never turn off safety.** Do not use `--unsafe-no-sandbox`, and do not set `allow_unsandboxed_tools` unless the user asks for it explicitly, knowing what it does.
 - **Respect refusals.** A `400` (the request could cost more than the donors' limit per request) or `403` (monthly limit or donations used up) from Moochy will not succeed on retry: shorten the request or tell the user. Busy donors are retried by Moochy itself.
 

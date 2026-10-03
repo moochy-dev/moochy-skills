@@ -1,6 +1,6 @@
 ---
 name: moochy-donate-button
-description: Add, fix, or check the Moochy "Donate tokens" button in a repository README, or in a GitHub organisation's or GitLab group's profile README, so people can donate LLM tokens to the project or the organisation. Use when the user asks for a Moochy button or badge, to accept token donations through moochy.dev, or to repair an existing Moochy button.
+description: Add, fix, or check the Moochy "Donate tokens" button or the live showcase chart (tokens donated and used) in a repository README, in a GitHub organisation's or GitLab group's profile README, or in a maintainer's personal profile README, so people can donate LLM tokens to the project, the organisation, or the person. Use when the user asks for a Moochy button, badge, or chart, to accept token donations through moochy.dev, or to repair an existing Moochy button.
 ---
 
 # Add the Moochy "Donate tokens" button
@@ -95,7 +95,7 @@ Match `height` in HTML to the size. Keep `alt="Donate tokens"` (or the label).
 ### 4. Put it in the README
 
 1. Use `README.md`, `README.rst`, or `README` at the repository root, in that order. If none exists, ask before creating one.
-2. Search for `moochy.dev/p/` and `moochy.dev/org/`. If a Moochy button is already there, do not add another; replace it only if the user asked for a change.
+2. Search for `moochy.dev/p/`, `moochy.dev/org/` and `moochy.dev/people/`. If a Moochy button is already there, do not add another; replace it only if the user asked for a change.
 3. If the README has a row of badges near the top, add the button at the end of that row in the same syntax. Otherwise add it on its own line right after the title, with a blank line before and after.
 4. Do not reorder, reformat, or remove anything else.
 5. Commit only the README: `docs: add a "Donate tokens" button (Moochy)`.
@@ -106,7 +106,7 @@ Match `height` in HTML to the size. Keep `alt="Donate tokens"` (or the label).
 
 ## Organisations (profile READMEs)
 
-A GitHub organisation or GitLab group claimed on Moochy has its own button; a donation to it serves every project its owner chose. Use it in the organisation's profile README, or in a project README only when the user asks for the organisation's button. Personal accounts are not organisations: a personal profile README gets the button of one of the person's projects (steps 1 to 5).
+A GitHub organisation or GitLab group claimed on Moochy has its own button; a donation to it serves every project its owner chose. Use it in the organisation's profile README, or in a project README only when the user asks for the organisation's button. Personal accounts are not organisations: see People below.
 
 | Where | Profile README file |
 |---|---|
@@ -132,7 +132,50 @@ Snippets, options, placement and the check are those of steps 3 to 5. Example:
 [![Donate tokens](https://moochy.dev/org/github/acme/button.svg)](https://moochy.dev/org/github/acme/donate)
 ```
 
-`moochy button` prints project buttons only. Commit message: `docs: add a "Donate tokens" button for the organisation (Moochy)`.
+`moochy button` prints project buttons only (`moochy button --chart --org …` prints the organisation's chart). Commit message: `docs: add a "Donate tokens" button for the organisation (Moochy)`.
+
+## People (personal profile READMEs)
+
+A maintainer who claimed their own GitHub or GitLab profile on Moochy can be sponsored: sponsors' tokens pay for that person's own requests on the public repos they maintain. Their personal profile README is `README.md` in the repository named like the user (`LOGIN/LOGIN` on GitHub; `USERNAME/USERNAME` on GitLab), so the person is `github/LOGIN` or `gitlab/USERNAME`. Check it and get the addresses:
+
+```sh
+curl -fsS "https://moochy.dev/api/v1/people/github/LOGIN"          # or .../people/gitlab/USERNAME
+```
+
+Same shape as the organisations API. Use `button_url` and `donate_url` exactly as returned (images `https://moochy.dev/people/github/LOGIN/button.svg`, GitLab `https://moochy.dev/people/gitlab/USERNAME/-/button.svg`). A `404` means the person has not claimed their profile: do not add the button; tell the user to sign in on moochy.dev, choose Claim your profile, then run `moochy claim --person` on their own machine (guide: https://moochy.dev/docs/sponsor-a-person). Snippets, options, placement and the check are those of steps 3 to 5.
+
+## Showcase chart
+
+A live chart of the tokens donated to and used by a project, an organisation, or a person, as an image for READMEs (`chart.svg`) or a card for websites (`card`, in an `<iframe>`; never in a README). Add it only when the user asks for a chart; put it below the button, never instead of it. Only for targets the checks above found on Moochy (otherwise the server answers `404` with a "not on moochy" image).
+
+If the Moochy app is installed, `moochy button --chart` prints the snippet (offline; it reads the git remote like `moochy button`; `--org ORG` or `--person PERSON` for the others; `--format markdown|html|rst|iframe`). Otherwise build it:
+
+| Target | Image | Link |
+|---|---|---|
+| GitHub project | `https://moochy.dev/p/github/OWNER/NAME/chart.svg` | `https://moochy.dev/p/github/OWNER/NAME` |
+| GitLab project | `https://moochy.dev/p/gitlab/GROUP/SUB/NAME/-/chart.svg` | `https://moochy.dev/p/gitlab/GROUP/SUB/NAME` |
+| Organisation | `https://moochy.dev/org/github/ORG/chart.svg` (GitLab: `…/org/gitlab/GROUP/-/chart.svg`) | `https://moochy.dev/org/github/ORG` |
+| Person | `https://moochy.dev/people/github/LOGIN/chart.svg` (GitLab: `…/people/gitlab/USERNAME/-/chart.svg`) | `https://moochy.dev/people/github/LOGIN` |
+
+The card is the same address with `card` instead of `chart.svg`. Options (strict, like the button; 400 otherwise):
+
+| Key | Values | Default |
+|---|---|---|
+| `metric` | `tokens`, `dollars` | `tokens` |
+| `series` | `both`, `donated`, `used` | `both` |
+| `kind` | `area`, `bars`, `line`, `sparkline` | `area` |
+| `period` | `7d`, `30d`, `90d`, `12m` | `30d` |
+| `theme` | `light`, `dark`, `auto` | `light` |
+| `size` | `s` (320 px wide), `m` (480), `l` (640) | `m` |
+| `label` | 1–40 characters: letters, digits, spaces, `. , : ; ! ? ' ’ & + - ( ) / # @` | the target's name |
+| `goal` | `1`: the monthly goal line (with `metric=dollars`) | off |
+| `total` | `1`: a headline total | off |
+
+```markdown
+[![Tokens donated and used on Moochy](https://moochy.dev/p/github/tinyhttp/arrow/chart.svg)](https://moochy.dev/p/github/tinyhttp/arrow)
+```
+
+For light and dark, use the `<picture>` form of step 3 with `chart.svg?theme=dark` in the `<source>`. Every option and snippet: https://moochy.dev/docs/donate-button.md (section "Showcase charts")
 
 ## Not on Moochy yet
 
