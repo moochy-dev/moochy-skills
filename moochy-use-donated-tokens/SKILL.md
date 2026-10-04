@@ -12,7 +12,7 @@ A maintainer's machine runs the Moochy app. It gives agents two ways in, both on
 - **Tokens stay in the environment.** The project token is printed by `moochy env` and lives in environment variables or the agent's own secret store. Never write it into a file tracked by git, a commit, a log, or your reply. Never ask the user for provider API keys: Moochy does not need them on this side.
 - **Never sign for the user.** `moochy owner init`, `moochy claim`, `moochy accept` (`approve`), `moochy members`, `moochy org`, and `moochy person` sign decisions with the maintainer's owner key. Tell the user the exact command and let them run it.
 - **Never turn off safety.** Do not use `--unsafe-no-sandbox`, and do not set `allow_unsandboxed_tools` unless the user asks for it explicitly, knowing what it does.
-- **Respect refusals.** A `400` (the request could cost more than the donors' limit per request) or `403` (monthly limit or donations used up) from Moochy will not succeed on retry: shorten the request or tell the user. Busy donors are retried by Moochy itself.
+- **Respect refusals.** A `400` (the request could cost more than the donors' limit per request) or `403` `quota_exceeded` (your monthly limit, or the donations' monthly, weekly or daily limits, are used up) from Moochy will not succeed on retry: shorten the request or tell the user. The `403` message names only the monthly limit, but donors' weekly and daily limits give the same `403`; a daily limit starts again at 00:00 UTC, a weekly one on Monday at 00:00 UTC. Busy donors are retried by Moochy itself.
 
 ## Steps
 
@@ -22,8 +22,9 @@ A maintainer's machine runs the Moochy app. It gives agents two ways in, both on
 moochy status
 ```
 
+- `moochy: command not found`: the app is not installed. Show the user `curl -fsSL https://moochy.dev/install.sh | sh` (Linux and macOS: checks the release's SHA-256, installs into `~/.local/bin`, no `sudo`) or `cargo install moochy --locked`, and let them run it.
 - "connection refused" or no socket: the app is not running. Ask the user to run `moochy up`.
-- Not signed in: the user runs `moochy login --roles gateway` and confirms the code in their browser. You cannot do this for them.
+- Not signed in: the user runs `moochy login --roles gateway`. It prints a code and a link that carries it, and opens the link in the browser when it can; on a server or over SSH, the user opens the printed link on another device. The user signs in and confirms the code. Never open the link or approve the device for them.
 - `moochy doctor` explains other problems (keychain, connection, clock, sandbox support).
 
 The project is found from the git remote; pass `--repo owner/name` when it is not.
@@ -70,5 +71,5 @@ When the MCP server is configured, hand self-contained tasks to donated tokens:
 
 ### 5. Limits and decisions
 
-- Each member and device has a monthly limit set by the maintainer; `moochy status` shows what is available.
+- Each member and device has a monthly limit set by the maintainer; donors can also set weekly and daily limits on their donations. `moochy status` shows what is available.
 - New donors wait until the maintainer accepts them (`moochy pending` lists them). Do not accept anyone yourself.

@@ -10,19 +10,20 @@ The donor's machine runs the Moochy app. It receives encrypted requests from a p
 ## Rules
 
 - **The key stays with the user.** Never ask for the provider API key, never read it, print it, or put it in a file, a command line, or your reply. The user types it into `moochy keys add` themselves (it reads from standard input).
-- **Donating is the user's decision.** Run `moochy donate` only when the user asked for that project (or organisation, or person) and that monthly amount, and show them the command first. Never raise a limit on your own.
+- **Donating is the user's decision.** Run `moochy donate` only when the user asked for that project (or organisation, or person) and those amounts (the monthly limit, and any weekly or daily limit), and show them the command first. Never raise a limit or add one on your own.
 - **Do not weaken safety.** Do not use `moochy up --unsafe-no-lockdown`, and do not skip the safety step for the user (`--accept-safety` is their confirmation, not yours).
-- **Do not install by piping a script into a shell.** Use a package manager or a release file the user can check.
+- **Install only from Moochy's own sources:** the installer at `https://moochy.dev/install.sh`, crates.io, or a release of `moochy-dev/moochy-cli`. Show the user the install command and let them run it. Never pipe any other script into a shell.
 
 ## Steps
 
 ### 1. Install
 
 ```sh
-brew install moochy-dev/tap/moochy        # macOS and Linux with Homebrew
+curl -fsSL https://moochy.dev/install.sh | sh   # Linux and macOS
+cargo install moochy --locked                   # or, with Rust, from crates.io
 ```
 
-Or download a release archive for the platform from the public `moochy-dev/moochy-cli` repository and check it (`gh attestation verify <file> --repo moochy-dev/moochy-cli`). Then `moochy --help`.
+The installer downloads the release archive for the system from the public `moochy-dev/moochy-cli` repository, checks its SHA-256, and puts `moochy` in `~/.local/bin`. It never uses `sudo` and never edits shell files; if `~/.local/bin` is not in `PATH`, it prints the line to add. `MOOCHY_INSTALL_DIR=DIR` installs into another folder, `MOOCHY_VERSION=vX.Y.Z` installs one release (`curl -fsSL https://moochy.dev/install.sh | MOOCHY_VERSION=v0.1.3 sh`). Or download a release archive and check it (`gh attestation verify <file> --repo moochy-dev/moochy-cli`). Then `moochy --version`.
 
 ### 2. Sign in (the user does this)
 
@@ -30,7 +31,7 @@ Or download a release archive for the platform from the public `moochy-dev/mooch
 moochy login --roles worker
 ```
 
-It prints a short code and a link; the user confirms the code in their browser. Add `gateway` (`--roles gateway,worker`) only if they also want to use donated tokens from this machine.
+It prints a short code and a link that already carries it (`https://relay.moochy.dev/device?code=…`), and opens the link in the browser when it can (a desktop terminal, not over SSH). The user signs in with GitHub or GitLab, checks that the code matches, and presses **Add this device**. On a server or over SSH, the user opens the printed link on another device; `--no-browser` never tries to open one. Never open the link or approve the device yourself. Add `gateway` (`--roles gateway,worker`) only if they also want to use donated tokens from this machine.
 
 ### 3. Add the provider key (the user types it)
 
@@ -50,7 +51,7 @@ Right after a key is added, the app asks for a **monthly limit for this machine*
 moochy safety --monthly-limit '$25' --accept-safety
 ```
 
-The machine does not donate until this is done. The most they can spend is the smallest of: each donation's monthly limit, this machine's limit, and the provider's spending limit.
+The machine does not donate until this is done. The most they can spend is the smallest of: each donation's limits (monthly, and weekly and daily if set), this machine's monthly limit, and the provider's spending limit.
 
 ### 5. Start the app
 
@@ -69,6 +70,18 @@ moochy donate --repo owner/name --cap '$20'      # up to $20 a month; asks for c
 
 Quote the amount so the shell keeps the `$`. The donation starts when the project's maintainer accepts it. Models, maximum effort, schedule, and visibility are set on the project's page on moochy.dev.
 
+Weekly and daily limits are optional, on top of the monthly limit, and work the same with `--org` and `--person`:
+
+```sh
+moochy donate --repo owner/name --cap '$20' --weekly-limit '$8' --daily-limit '$2'   # also at most $8 a week and $2 a day
+```
+
+- A day starts at 00:00 UTC; a week starts on Monday at 00:00 UTC. The daily limit cannot be higher than the weekly limit, and neither can be higher than the monthly limit: `moochy donate` refuses a higher one.
+- Moochy enforces them, and the app on the user's machine checks them again before every call.
+- They need Moochy 0.1.3 or later on every device of the user that serves donations (`moochy --version`). Moochy never sends such a donation's requests to an older version, so update first.
+- Tell the user that these limits are in UTC, and that they can set or change them later on moochy.dev, under **More limits** in the donation's settings. Lowering the monthly limit also lowers a weekly or daily limit above it.
+- Add them only when the user asks for a weekly or daily amount.
+
 To an organisation (a GitHub organisation or a GitLab group, with every project its owner chose):
 
 ```sh
@@ -86,13 +99,13 @@ moochy donate --person github/alice --cap '$20'          # or --person gitlab/US
 ```
 
 - `--person` always names the code host. Never turn a project (`--repo`) or an organisation (`--org`) into a person, or the reverse: ask the user.
-- `moochy person list --person github/alice` shows the repos it would serve; the page is `https://moochy.dev/people/github/alice`. An unclaimed profile can still be sponsored: the sponsorship waits.
+- `moochy person list --person github/alice` shows the repos it would serve; the page is `https://moochy.dev/people/github/alice`. Only a claimed profile can be sponsored: until the person claims it, `moochy donate --person` answers `not_found`.
 - The person accepts the user once. Sponsoring yourself is refused (`self_donation`). Guide: https://moochy.dev/docs/sponsor-a-person.md
 
 ### 7. Pause, stop, and check
 
 ```sh
-moochy donations                       # each donation (organisations and people included), what it used this month, and its id
+moochy donations                       # each donation (organisations and people included), what it used this month, its weekly and daily limits if set, and its id
 moochy donations pause <id>            # or resume <id>
 moochy donations stop <id>             # ends the donation
 moochy pause                           # stop serving from this machine at once (moochy resume to undo)

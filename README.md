@@ -1,6 +1,6 @@
 # Moochy skills for coding agents
 
-Three skills teach a coding agent how to work with Moochy. Each is a folder with a `SKILL.md` in the [skills](https://skills.sh) format: a short description of when to use it, then the exact commands and file edits. They contain no tokens and never ask the agent to run a downloaded script or to skip an approval.
+Three skills teach a coding agent how to work with Moochy. Each is a folder with a `SKILL.md` in the [skills](https://skills.sh) format: a short description of when to use it, then the exact commands and file edits. They contain no tokens and never ask the agent to skip an approval. The only downloaded script they name is Moochy's own installer (`https://moochy.dev/install.sh`, which checks the release's SHA-256), and the agent shows it to the user to run.
 
 | Skill | Use it when |
 |---|---|
@@ -47,7 +47,7 @@ Folders are those of the skills CLI (checked 2026-10-02); `npx skills add` picks
 
 - `name` and `description` in the frontmatter are required; the description says when to use the skill.
 - Keep each `SKILL.md` under 500 lines and name only `moochy` commands that exist (`moochy <command> --help` must succeed).
-- Never include a token, a key, or an instruction to pipe a downloaded script into a shell or to disable approvals.
+- Never include a token, a key, or an instruction to disable approvals, or to pipe any script into a shell other than Moochy's installer at `https://moochy.dev/install.sh`, shown to the user to run.
 - The same files are published on the docs site at https://moochy.dev/docs/skills (the site copies this repository at build time).
 - Check the format before you push: `python3 scripts/check-skills.py`.
 

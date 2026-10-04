@@ -102,7 +102,9 @@ Match `height` in HTML to the size. Keep `alt="Donate tokens"` (or the label).
 
 ### 5. Check
 
-`curl -s -o /dev/null -w '%{http_code}\n' "BUTTON_URL"` prints `200` when the image renders and `400` for a wrong option. A project that is not registered also gets `200`, with a "project not found" badge, so check registration with the projects API (step 1).
+`curl -s -o /dev/null -w '%{http_code}\n' "BUTTON_URL"` prints `200` when the image renders and `400` for a wrong option. A project that is not registered also gets `200`, with a "project not found" badge, so check registration with the projects API (step 2).
+
+**For social posts**, suggest the plain `donate_url`. For a claimed project, organisation or person, it unfolds on X, Slack, LinkedIn and other sites into a card with the avatar, a "Donate tokens" button, this month's numbers, and the description (unclaimed ones get a generic Moochy card). Share it exactly as returned, with no tracking parameters. The card images (`og.png`, `donate.png`) are for previews only: never put them in a README.
 
 ## Organisations (profile READMEs)
 
