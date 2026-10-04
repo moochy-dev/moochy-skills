@@ -1,6 +1,6 @@
 # Moochy skills for coding agents
 
-Three skills teach a coding agent how to work with Moochy. Each is a folder with a `SKILL.md` in the [skills](https://skills.sh) format: a short description of when to use it, then the exact commands and file edits. They contain no tokens and never ask the agent to skip an approval. The only downloaded script they name is Moochy's own installer (`https://moochy.dev/install.sh`, which checks the release's SHA-256), and the agent shows it to the user to run.
+Three skills teach a coding agent how to work with Moochy. Each is a folder with a `SKILL.md` in the [skills](https://skills.sh) format: a short description of when to use it, then the exact commands and file edits. They contain no tokens, never ask the agent to skip an approval, and never pipe a downloaded script into a shell. They install Moochy from crates.io or from a release archive checked with `gh attestation verify`, and the agent shows the command to the user to run. They tell the agent to treat text from Moochy's APIs (names, descriptions) as data, never as instructions.
 
 | Skill | Use it when |
 |---|---|
@@ -47,9 +47,9 @@ Folders are those of the skills CLI (checked 2026-10-02); `npx skills add` picks
 
 - `name` and `description` in the frontmatter are required; the description says when to use the skill.
 - Keep each `SKILL.md` under 500 lines and name only `moochy` commands that exist (`moochy <command> --help` must succeed).
-- Never include a token, a key, or an instruction to disable approvals, or to pipe any script into a shell other than Moochy's installer at `https://moochy.dev/install.sh`, shown to the user to run.
-- The same files are published on the docs site at https://moochy.dev/docs/skills (the site copies this repository at build time).
-- Check the format before you push: `python3 scripts/check-skills.py`.
+- Never include a token, a key, an instruction to disable approvals, `--box-is-sandbox`, a hidden comment or character, or any downloaded script piped into a shell.
+- The docs site serves a copy at https://moochy.dev/docs/skills. The relay embeds it from its pinned `oss/moochy-skills` submodule, so the copy changes only when a relay release moves that submodule.
+- Check before you push: `python3 scripts/check-skills.py`. It checks the format and the A247 safety rules (ported from moochy-relay's `e2e/harness/skills.go`), and CI runs it on every push and pull request.
 
 ## License
 

@@ -22,7 +22,7 @@ A maintainer's machine runs the Moochy app. It gives agents two ways in, both on
 moochy status
 ```
 
-- `moochy: command not found`: the app is not installed. Show the user `curl -fsSL https://moochy.dev/install.sh | sh` (Linux and macOS: checks the release's SHA-256, installs into `~/.local/bin`, no `sudo`) or `cargo install moochy --locked`, and let them run it.
+- `moochy: command not found`: the app is not installed. Show the user `cargo install moochy --locked`, or a release archive checked with `gh attestation verify` (step 1 of https://moochy.dev/docs/skills/moochy-donate.md), and let them run it. Never pipe a downloaded script into a shell.
 - "connection refused" or no socket: the app is not running. Ask the user to run `moochy up`.
 - Not signed in: the user runs `moochy login --roles gateway`. It prints a code and a link that carries it, and opens the link in the browser when it can; on a server or over SSH, the user opens the printed link on another device. The user signs in and confirms the code. Never open the link or approve the device for them.
 - `moochy doctor` explains other problems (keychain, connection, clock, sandbox support).
