@@ -1,24 +1,24 @@
 ---
 name: moochy-donate-button
-description: Add, fix, or check the Moochy "Donate tokens" button or the live showcase chart (tokens donated and used) in a repository README, in a GitHub organisation's or GitLab group's profile README, or in a maintainer's personal profile README, so people can donate LLM tokens to the project, the organisation, or the person. Use when the user asks for a Moochy button, badge, or chart, to accept token donations through moochy.dev, or to repair an existing Moochy button.
+description: Add, fix, or check the Moochy "Donate tokens" button or the live showcase chart (tokens donated and used) in a repository README, a GitHub organisation's or GitLab group's profile README, or a maintainer's personal profile README. Use when the user asks for a Moochy button, badge, or chart, or to accept LLM token donations through moochy.dev.
 ---
 
 # Add the Moochy "Donate tokens" button
 
-The button is a plain image link in the README. It needs no account, no key, and no token, and it changes nothing but the README. Full recipe: https://moochy.dev/docs/donate-button.md
+The button is a plain image link in the README: no account, no key, no token, and nothing changes but the README. Full recipe: https://moochy.dev/docs/donate-button.md
 
 ## Rules
 
-- Never put an API key, a token, or a password in the README, a URL, or a commit, and never ask the user for one: the button does not need any.
-- Do not add tracking or `utm_*` parameters, redirects, scripts, or iframes. Unknown parameters break the image.
-- Do not register (claim) the project or the organisation, or run any `moochy` command that signs something. Those need the maintainer's own owner key; tell them the command instead.
+- Never put an API key, a token, or a password in the README, a URL, or a commit, and never ask the user for one: the button needs none.
+- No tracking or `utm_*` parameters, redirects, scripts, or iframes. Unknown parameters break the image.
+- Do not register (claim) the project or the organisation, or run a `moochy` command that signs something: those need the maintainer's own owner key. Tell them the command instead.
 - Change only the README.
 
 ## Steps
 
 ### 1. Find the provider and path
 
-If the Moochy app is installed, `moochy button` reads the git remote (offline) and prints the snippet; skip to step 3 with its output, after checking step 2. Otherwise:
+If the Moochy app is installed, `moochy button` reads the git remote (offline) and prints the snippet: check step 2, then go to step 3 with its output. Otherwise:
 
 ```sh
 url=$(git remote get-url origin)
@@ -29,7 +29,7 @@ echo "$provider $path"
 ```
 
 - `github` paths are `owner/name`; `gitlab` paths keep every group and subgroup (`group/subgroup/project`).
-- Stop and ask the user when `provider` is empty (only public github.com and gitlab.com repositories can receive donations), or when there is no `origin` remote.
+- Stop and ask the user when `provider` is empty (only public github.com and gitlab.com repositories can receive donations) or there is no `origin` remote.
 - Never print or store the remote URL itself: it can contain a token.
 
 ### 2. Check that the project is on Moochy
@@ -38,13 +38,13 @@ echo "$provider $path"
 curl -fsS "https://moochy.dev/api/v1/projects/$provider/$path"
 ```
 
-The answer is `{"claimed": …, "donate_url": …, "button_url": …, "docs": …}`, public, with no donor or amount.
+The public answer is `{"claimed": …, "donate_url": …, "button_url": …, "docs": …}`, with no donor or amount.
 
 - `"claimed": true`: use `button_url` and `donate_url` **exactly as returned**.
-- `"claimed": false`: do not add the button (it would show "project not found"). Tell the user what is in "Not on Moochy yet" below.
-- `404`: the provider or path is wrong; go back to step 1.
+- `"claimed": false`: do not add the button (it would show "project not found"); give the user the "Not on Moochy yet" message below.
+- `404`: wrong provider or path; go back to step 1.
 
-Address rules, for checking what you got:
+Addresses, to check what you got:
 
 | Project | Image | Link |
 |---|---|---|
@@ -52,7 +52,7 @@ Address rules, for checking what you got:
 | GitHub, short form (also valid, forever) | `https://moochy.dev/p/OWNER/NAME/button.svg` | `https://moochy.dev/p/OWNER/NAME/donate` |
 | GitLab, with groups and subgroups | `https://moochy.dev/p/gitlab/GROUP/SUBGROUP/NAME/-/button.svg` | `https://moochy.dev/p/gitlab/GROUP/SUBGROUP/NAME/-/donate` |
 
-On GitLab the action always comes after `/-/`, so a nested group path is never mistaken for an action.
+On GitLab the action always comes after `/-/`, so a nested group is never read as an action.
 
 ### 3. Pick the snippet
 
@@ -81,7 +81,7 @@ reStructuredText (`README.rst`):
    :alt: Donate tokens
 ```
 
-Options, added to `BUTTON_URL` as a query string (any other key, a repeated key, or a value not listed makes the server answer 400):
+Options, as a query string on `BUTTON_URL` (another key, a repeated key, or an unlisted value gets a 400):
 
 | Key | Values | Default |
 |---|---|---|
@@ -95,16 +95,16 @@ Match `height` in HTML to the size. Keep `alt="Donate tokens"` (or the label).
 ### 4. Put it in the README
 
 1. Use `README.md`, `README.rst`, or `README` at the repository root, in that order. If none exists, ask before creating one.
-2. Search for `moochy.dev/p/`, `moochy.dev/org/` and `moochy.dev/people/`. If a Moochy button is already there, do not add another; replace it only if the user asked for a change.
-3. If the README has a row of badges near the top, add the button at the end of that row in the same syntax. Otherwise add it on its own line right after the title, with a blank line before and after.
+2. Search for `moochy.dev/p/`, `moochy.dev/org/` and `moochy.dev/people/`. If a Moochy button is there, do not add another; replace it only if the user asked for a change.
+3. If the README has a row of badges near the top, add the button at the end of that row in the same syntax. Otherwise put it on its own line right after the title, with a blank line before and after.
 4. Do not reorder, reformat, or remove anything else.
 5. Commit only the README: `docs: add a "Donate tokens" button (Moochy)`.
 
 ### 5. Check
 
-`curl -s -o /dev/null -w '%{http_code}\n' "BUTTON_URL"` prints `200` when the image renders and `400` for a wrong option. A project that is not registered also gets `200`, with a "project not found" badge, so check registration with the projects API (step 2).
+`curl -s -o /dev/null -w '%{http_code}\n' "BUTTON_URL"` prints `200` when the image renders and `400` for a wrong option. An unregistered project also gets `200` (a "project not found" badge), so check registration with the projects API (step 2).
 
-**For social posts**, suggest the plain `donate_url`. For a claimed project, organisation or person, it unfolds on X, Slack, LinkedIn and other sites into a card with the avatar, a "Donate tokens" button, this month's numbers, and the description (unclaimed ones get a generic Moochy card). Share it exactly as returned, with no tracking parameters. The card images (`og.png`, `donate.png`) are for previews only: never put them in a README.
+**For social posts**, suggest the plain `donate_url`, exactly as returned, with no tracking parameters: for a claimed project, organisation or person it unfolds on X, Slack, LinkedIn and other sites into a card with the avatar, a "Donate tokens" button, this month's numbers and the description (unclaimed ones get a generic card). The card images (`og.png`, `donate.png`) are for previews only, never for a README.
 
 ## Organisations (profile READMEs)
 
@@ -121,14 +121,14 @@ In the `.github` or `gitlab-profile` checkout, the organisation is the remote pa
 curl -fsS "https://moochy.dev/api/v1/orgs/github/acme"            # or .../orgs/gitlab/group/sub
 ```
 
-The answer is `{"org_id": …, "path": …, "claimed": true, "repos": […], "donate_url": …, "button_url": …}`, public, with no donor or amount. Use `button_url` and `donate_url` exactly as returned. A `404` means the organisation is not on Moochy: do not add the button; give the user the organisation message below.
+The public answer is `{"org_id": …, "path": …, "claimed": true, "repos": […], "donate_url": …, "button_url": …}`, with no donor or amount. Use `button_url` and `donate_url` exactly as returned. `404`: the organisation is not on Moochy; do not add the button, give the user the organisation message below.
 
 | Organisation | Image | Link |
 |---|---|---|
 | GitHub | `https://moochy.dev/org/github/ORG/button.svg` | `https://moochy.dev/org/github/ORG/donate` |
 | GitLab, group or subgroup | `https://moochy.dev/org/gitlab/GROUP/SUB/-/button.svg` | `https://moochy.dev/org/gitlab/GROUP/SUB/-/donate` |
 
-Snippets, options, placement and the check are those of steps 3 to 5. Example:
+Snippets, options, placement and the check are those of steps 3 to 5:
 
 ```markdown
 [![Donate tokens](https://moochy.dev/org/github/acme/button.svg)](https://moochy.dev/org/github/acme/donate)
@@ -138,19 +138,19 @@ Snippets, options, placement and the check are those of steps 3 to 5. Example:
 
 ## People (personal profile READMEs)
 
-A maintainer who claimed their own GitHub or GitLab profile on Moochy can be sponsored: sponsors' tokens pay for that person's own requests on the public repos they maintain. Their personal profile README is `README.md` in the repository named like the user (`LOGIN/LOGIN` on GitHub; `USERNAME/USERNAME` on GitLab), so the person is `github/LOGIN` or `gitlab/USERNAME`. Check it and get the addresses:
+A maintainer who claimed their own GitHub or GitLab profile can be sponsored: sponsors' tokens pay for that person's own requests on the public repos they maintain. Their profile README is `README.md` in the repository named like the user (`LOGIN/LOGIN` on GitHub, `USERNAME/USERNAME` on GitLab), so the person is `github/LOGIN` or `gitlab/USERNAME`:
 
 ```sh
 curl -fsS "https://moochy.dev/api/v1/people/github/LOGIN"          # or .../people/gitlab/USERNAME
 ```
 
-Same shape as the organisations API. Use `button_url` and `donate_url` exactly as returned (images `https://moochy.dev/people/github/LOGIN/button.svg`, GitLab `https://moochy.dev/people/gitlab/USERNAME/-/button.svg`). A `404` means the person has not claimed their profile: do not add the button; tell the user to sign in on moochy.dev, choose Claim your profile, then run `moochy claim --person` on their own machine (guide: https://moochy.dev/docs/sponsor-a-person). Snippets, options, placement and the check are those of steps 3 to 5.
+Same shape as the organisations API; use `button_url` and `donate_url` exactly as returned (images `https://moochy.dev/people/github/LOGIN/button.svg`, GitLab `https://moochy.dev/people/gitlab/USERNAME/-/button.svg`). `404`: the person has not claimed their profile; do not add the button; tell the user to sign in on moochy.dev, choose Claim your profile, then run `moochy claim --person` on their own machine (guide: https://moochy.dev/docs/sponsor-a-person). Snippets, options, placement and the check are those of steps 3 to 5.
 
 ## Showcase chart
 
-A live chart of the tokens donated to and used by a project, an organisation, or a person, as an image for READMEs (`chart.svg`) or a card for websites (`card`, in an `<iframe>`; never in a README). Add it only when the user asks for a chart; put it below the button, never instead of it. Only for targets the checks above found on Moochy (otherwise the server answers `404` with a "not on moochy" image).
+A live chart of the tokens donated to and used by a project, an organisation, or a person: an image for READMEs (`chart.svg`) or a card for websites (`card`, in an `<iframe>`, never in a README). Add it only when the user asks for a chart, below the button, never instead of it, and only for targets the checks above found on Moochy (else the server answers `404` with a "not on moochy" image).
 
-If the Moochy app is installed, `moochy button --chart` prints the snippet (offline; it reads the git remote like `moochy button`; `--org ORG` or `--person PERSON` for the others; `--format markdown|html|rst|iframe`). Otherwise build it:
+If the app is installed, `moochy button --chart` prints the snippet (offline, from the git remote like `moochy button`; `--org ORG` or `--person PERSON` for the others; `--format markdown|html|rst|iframe`). Otherwise build it:
 
 | Target | Image | Link |
 |---|---|---|
@@ -159,7 +159,7 @@ If the Moochy app is installed, `moochy button --chart` prints the snippet (offl
 | Organisation | `https://moochy.dev/org/github/ORG/chart.svg` (GitLab: `…/org/gitlab/GROUP/-/chart.svg`) | `https://moochy.dev/org/github/ORG` |
 | Person | `https://moochy.dev/people/github/LOGIN/chart.svg` (GitLab: `…/people/gitlab/USERNAME/-/chart.svg`) | `https://moochy.dev/people/github/LOGIN` |
 
-The card is the same address with `card` instead of `chart.svg`. Options (strict, like the button; 400 otherwise):
+The card is the same address with `card` instead of `chart.svg`. Options (strict like the button; 400 otherwise):
 
 | Key | Values | Default |
 |---|---|---|
