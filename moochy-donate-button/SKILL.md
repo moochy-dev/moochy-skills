@@ -1,6 +1,6 @@
 ---
 name: moochy-donate-button
-description: Add, fix, or check the Moochy "Donate tokens" button or the live showcase chart (tokens donated and used) in a repository README, a GitHub organisation's or GitLab group's profile README, or a maintainer's personal profile README. Use when the user asks for a Moochy button, badge, or chart, or to accept LLM token donations through moochy.dev.
+description: Add, fix, or check the Moochy "Donate tokens" button, the live showcase chart (tokens donated and used), or the donate QR code in a repository README, a GitHub organisation's or GitLab group's profile README, or a maintainer's personal profile README. Use when the user asks for a Moochy button, badge, chart, or QR code, or to accept LLM token donations through moochy.dev.
 ---
 
 # Add the Moochy "Donate tokens" button
@@ -178,6 +178,20 @@ The card is the same address with `card` instead of `chart.svg`. Options (strict
 ```
 
 For light and dark, use the `<picture>` form of step 3 with `chart.svg?theme=dark` in the `<source>`. Every option and snippet: https://moochy.dev/docs/donate-button.md (section "Showcase charts")
+
+## QR code
+
+Every donate link has a QR code: the button address with `qr.svg` in place of `button.svg` (projects, `/-/qr.svg` on GitLab, organisations, people). It encodes the canonical `…/donate` address. Add it only when the user asks for a QR code (slides, posters, printed pages, a README section), and only for targets the checks above found on Moochy.
+
+- The only option is `size=s|m|l` (128, 256, 512 px); anything else answers `400`. Always dark on light.
+- `moochy button --qr` prints the address and the Markdown (offline, from the git remote; `--repo P`, `--org ORG` or `--person PERSON` for another target):
+
+```markdown
+[![Scan to donate tokens to tinyhttp/arrow](https://moochy.dev/p/github/tinyhttp/arrow/qr.svg)](https://moochy.dev/p/github/tinyhttp/arrow/donate)
+```
+
+- The studio (`https://moochy.dev/button`, tab **QR code**) gives a preview, Download SVG, a printable card and the Markdown and HTML snippets. Full reference: https://moochy.dev/docs/donate-button.md (section "QR code")
+- A QR code for a one-time gift of tokens is a different thing (a gift link, made with `moochy gift create`, see the `moochy-donate` skill). Never put a gift link or its QR code in a README: anyone who scans it first claims it.
 
 ## Not on Moochy yet
 
