@@ -140,11 +140,11 @@ A gift is a one-time link for a fixed amount: the first account that claims it g
 moochy gift create 20                          # $1 to $1,000, shown once; --note, --models, --expires DAYS (30 default, 90 max)
 moochy gift list                               # open, claimed, revoked, expired
 moochy gift revoke gf_…                        # the link stops working; --replace gives a new link
-moochy gift claim <link> --personal            # for the user's own use, on any project, public or private
-moochy gift claim <link> --repo owner/name     # or --org github/ORG, --person github/LOGIN: a target the user claimed
+moochy gift claim --personal                   # for the user's own use, on any project, public or private (asks for the link)
+moochy gift claim --repo owner/name            # or --org github/ORG, --person github/LOGIN: a target the user claimed
 ```
 
-- **A gift link is like cash.** Anyone who has it can claim it. Give it only to the user. Never put it in a file, a commit, an issue, a log or a public message unless the user asks for exactly that.
+- **A gift link is like cash.** Anyone who has it can claim it. To claim, the user pastes the link when `moochy gift claim` asks (or `printf '%s\n' "$LINK" | moochy gift claim - …`); never put it on the command line, where other processes and the shell history see it. Give it only to the user. Never put it in a file, a commit, an issue, a log or a public message unless the user asks for exactly that.
 - Make a gift only for the amount the user asked for, and show them the command first.
 - Claiming is the user's decision. The donation then waits for their acceptance: their passkey on the page the command prints, or their owner key (the command asks for the passphrase). Do not accept for them.
 - **For my own use** needs a GitHub or GitLab account at least 30 days old. Then `moochy run --personal -- <agent>` (also `env`, `mcp`, `connect --personal`) uses it; a repo that is not on Moochy uses it without the flag.
