@@ -1,6 +1,6 @@
 ---
 name: moochy-donate
-description: Help a user donate LLM tokens with Moochy to an open-source project, a GitHub organisation or GitLab group, or a maintainer - install, add the provider key locally, set limits, donate, pause or stop, see what the key paid for. Use when the user wants to donate tokens with an Anthropic, OpenAI, OpenRouter, DeepSeek or xAI key or a local GPU, or manage Moochy donations.
+description: Help a user donate LLM tokens with Moochy to an open-source project, a GitHub organisation or GitLab group, or a maintainer - install, add the provider key locally, set limits, donate, pause or stop, see what the key paid for, give or claim a gift link, Moochy Credits. Use when the user wants to donate tokens with an Anthropic, OpenAI, OpenRouter, DeepSeek or xAI key or a local GPU, or manage Moochy donations, gift links or credits.
 ---
 
 # Donate tokens with Moochy
@@ -131,6 +131,37 @@ moochy journal                         # what the key was used for: project, mod
 ```
 
 Stopping is immediate: nothing was transferred, so nothing needs to be returned.
+
+### 8. Gift links (give or claim AI tokens with a link or a QR code)
+
+A gift is a one-time link for a fixed amount: the first account that claims it gets a donation with a total (not a monthly limit) that ends 12 months after the claim. Guide: https://moochy.dev/docs/gift-tokens.md
+
+```sh
+moochy gift create 20                          # $1 to $1,000, shown once; --note, --models, --expires DAYS (30 default, 90 max)
+moochy gift list                               # open, claimed, revoked, expired
+moochy gift revoke gf_…                        # the link stops working; --replace gives a new link
+moochy gift claim <link> --personal            # for the user's own use, on any project, public or private
+moochy gift claim <link> --repo owner/name     # or --org github/ORG, --person github/LOGIN: a target the user claimed
+```
+
+- **A gift link is like cash.** Anyone who has it can claim it. Give it only to the user. Never put it in a file, a commit, an issue, a log or a public message unless the user asks for exactly that.
+- Make a gift only for the amount the user asked for, and show them the command first.
+- Claiming is the user's decision. The donation then waits for their acceptance: their passkey on the page the command prints, or their owner key (the command asks for the passphrase). Do not accept for them.
+- **For my own use** needs a GitHub or GitLab account at least 30 days old. Then `moochy run --personal -- <agent>` (also `env`, `mcp`, `connect --personal`) uses it; a repo that is not on Moochy uses it without the flag.
+- Errors: a 404 means unknown, used, expired or revoked; `self_gift` (own gift, or a shared sign-in, email or device), `not_eligible` (private, fork, archived or younger than 30 days; for own use, an account younger than 30 days), `already_donating` (the giver already donates there). Limits: 20 open gifts, 3 claims a day, 10 live gift donations.
+
+### 9. Moochy Credits (not available yet)
+
+For users without an API key: a card payment becomes credits (payment minus the Stripe fee and the provider's fee), and Moochy's own computers spend them with Moochy's own key. Off until Moochy opens it; until then the server refuses these commands. Guide: https://moochy.dev/docs/credits.md
+
+```sh
+moochy credits                                 # balance, held (72 h), purchases with fees, allocations
+moochy credits add 20                          # opens the web page; cards are only ever entered there
+moochy donate --credits 20 --repo owner/name   # a one-off total from the balance
+moochy gift create 20 --credits                # a gift paid from the balance
+```
+
+Never ask for or type card details: the user enters them in the browser, at Stripe.
 
 ## Run a node with Docker Compose
 
