@@ -1,6 +1,6 @@
 ---
 name: moochy-donate-button
-description: Add, fix, or check the Moochy "Donate tokens" button, the live showcase chart (tokens donated and used), or the donate QR code in a repository README, a GitHub organisation's or GitLab group's profile README, or a maintainer's personal profile README. Use when the user asks for a Moochy button, badge, chart, or QR code, or to accept LLM token donations through moochy.dev.
+description: Add, fix, or check the Moochy "Donate tokens" button, the live showcase chart (tokens donated and used), or the donate QR code in a repository README, a GitHub organisation's or GitLab group's profile README, or a maintainer's personal profile README. Use when the user asks for a Moochy button, badge, chart, or donate QR code, or to accept LLM token donations through moochy.dev. For a QR code of a one-time gift of tokens, use the moochy-donate skill.
 ---
 
 # Add the Moochy "Donate tokens" button

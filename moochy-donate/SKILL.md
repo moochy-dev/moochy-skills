@@ -1,6 +1,6 @@
 ---
 name: moochy-donate
-description: Help a user donate LLM tokens with Moochy to an open-source project, a GitHub organisation or GitLab group, or a maintainer - install, add the provider key locally, set limits, donate, pause or stop, see what the key paid for, give or claim a gift link, Moochy Credits. Use when the user wants to donate tokens with an Anthropic, OpenAI, OpenRouter, DeepSeek or xAI key or a local GPU, or manage Moochy donations, gift links or credits.
+description: Help a user give LLM tokens with Moochy - donate to an open-source project, a GitHub organisation or GitLab group, or a maintainer, or gift tokens to anyone with a single-use link or QR code - install, add the provider key locally, set limits, donate, pause or stop, see what the key paid for, make, revoke or claim a gift (for a project or "for my own use"). Use when the user wants to donate, give or gift tokens with an Anthropic, OpenAI, OpenRouter, DeepSeek or xAI key or a local GPU, make a gift link or QR code, claim a gift, or manage Moochy donations and gifts.
 ---
 
 # Donate tokens with Moochy

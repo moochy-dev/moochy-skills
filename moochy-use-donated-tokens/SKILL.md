@@ -1,6 +1,6 @@
 ---
 name: moochy-use-donated-tokens
-description: Use the LLM tokens donated to an open-source project through Moochy - moochy run (sandbox), moochy connect (MCP server or base URL for this agent), and the moochy_delegate tool. Use when the user mentions Moochy, donated tokens, moochy run, moochy_delegate, or wants the project's donations as the model.
+description: Use the LLM tokens donated to an open-source project through Moochy, or a gift the user claimed for their own use - moochy run (sandbox), moochy connect (MCP server or base URL for this agent), the moochy_delegate tool, and --personal for own-use gifts. Use when the user mentions Moochy, donated or gifted tokens, a gift claimed "for my own use", moochy run, moochy_delegate, or wants the project's donations or their own gifts as the model.
 ---
 
 # Use donated tokens with Moochy
@@ -28,6 +28,8 @@ moochy status
 - `moochy doctor` explains other problems (keychain, connection, clock, sandbox support).
 
 The project comes from the git remote; pass `--repo owner/name` when it does not.
+
+A gift the user claimed **For my own use** pays for their own requests on any repository, public or private. Add `--personal` to `moochy run`, `env`, `mcp` and `connect` to use it; in a repository that is not on Moochy, the app uses it without the flag. Guide: https://moochy.dev/docs/gift-tokens.md
 
 ### 2. Best: run the agent inside the sandbox
 

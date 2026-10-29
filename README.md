@@ -5,8 +5,8 @@ Three skills teach a coding agent how to work with Moochy. Each is a folder with
 | Skill | Use it when |
 |---|---|
 | [`moochy-donate-button`](moochy-donate-button/SKILL.md) | Adding, fixing, or checking the "Donate tokens" button in a README, including an organisation's or a person's profile README, the live showcase chart, and the donate QR code |
-| [`moochy-use-donated-tokens`](moochy-use-donated-tokens/SKILL.md) | A maintainer wants the agent to use the project's donated tokens: `moochy connect`, `moochy run`, the `moochy_delegate` tool |
-| [`moochy-donate`](moochy-donate/SKILL.md) | A donor wants to donate tokens to a project, an organisation, or a person: install, keys stay local, limits, `moochy donate`, pause and stop, gift links, Moochy Credits |
+| [`moochy-use-donated-tokens`](moochy-use-donated-tokens/SKILL.md) | A maintainer wants the agent to use the project's donated tokens, or a user wants to use a gift claimed for their own use: `moochy connect`, `moochy run`, `--personal`, the `moochy_delegate` tool |
+| [`moochy-donate`](moochy-donate/SKILL.md) | A user wants to donate tokens to a project, an organisation, or a person, or gift tokens to anyone with a link or a QR code: install, keys stay local, limits, `moochy donate`, pause and stop, make and claim gift links |
 
 ## Install
 
